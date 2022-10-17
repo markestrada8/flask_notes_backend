@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 import os
 
-# Set up app and DB path
+# Set up Flask app and DB path
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
@@ -11,9 +11,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-# Set up SQL Schema
 
-
+# Set up SQL Schema ("Note" table with SQLite auto-generated id, title and content columns)
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), unique=True)
@@ -26,7 +25,6 @@ class Note(db.Model):
 
 class NoteSchema(ma.Schema):
     class Meta:
-        # Fields to expose
         fields = ('title', 'content', 'fname')
 
 
