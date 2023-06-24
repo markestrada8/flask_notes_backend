@@ -1,22 +1,29 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+# Implement CORS
+from flask_cors import CORS
 import os
+
 
 # Set up Flask app and DB path
 app = Flask(__name__)
+# Implement CORS
+CORS(app)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
     os.path.join(basedir, 'app.sqlite')
+
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-
 # Set up SQL Schema ("Note" table with SQLite auto-generated id, title and content columns)
-class Note(db.Model):
+
+
+class Notes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), unique=True)
-    content = db.Column(db.String(1000), unique=True)
+    content = db.Column(db.String(255), unique=True)
 
     def __init__(self, title, content):
         self.title = title
@@ -25,7 +32,7 @@ class Note(db.Model):
 
 class NoteSchema(ma.Schema):
     class Meta:
-        fields = ('title', 'content', 'fname')
+        fields = ('title', 'content')
 
 
 note_schema = NoteSchema()
